@@ -58,9 +58,10 @@ io.on('connection', socket => {
     });
 
     socket.on('disconnect', () => {
-        console.log(`User Disconnected. Cancelling request.`);
-        if (provider) {
-            provider.cancel();
-        }
+        // known bug: disconnect happens randomly, commented out for now
+        // console.log(`User Disconnected. Cancelling request.`);
+        // if (provider) {
+        //     provider.cancel();
+        // }
     });
 });
