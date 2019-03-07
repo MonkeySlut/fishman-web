@@ -25,8 +25,8 @@
         "memory-fs": "^0.4.1",
         "semver": "^5.6.0",
         "silent-npm-registry-client": "^3.0.1",
-        "socket.io": "^1.7.2",
-        "socket.io-stream": "^0.9.1",
+        "socket.io": "^2.2.0",
+        "stream-buffers": "^3.0.2",
         "tar-stream": "^2.0.1"
     },
     "engines": {

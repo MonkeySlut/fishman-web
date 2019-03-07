@@ -77,35 +77,11 @@
         var domCounterLimit = 100;
         var domCounterBuffer = 5;
         var domCounter = 0;
-        var fileLength = 0;
-        fileBuffer = [];
-        socket.on('finalDownloadToClientMD', function(streamSize) {
-            ss(socket).on('finalDownloadToClient', function (stream) {
-                stream.on('data',function(chunk) {
-                    fileLength += chunk.length;
-                    fileBuffer.push(chunk);
-                    var precentage = ((fileLength / streamSize) * 100).toFixed(2);
-                    printProgress(term, precentage);
-                });
 
-                stream.on('end', function () {
-                    printProgress(term, 100);
-                    var filedata = new Uint8Array(fileLength),
-                    i = 0;
-
-                    //== Loop to fill the final array
-                    fileBuffer.forEach(function (buff) {
-                        for (var j = 0; j < buff.length; j++) {
-                                filedata[i] = buff[j];
-                                    i++;
-                            }
-                    });
-
-                    //== Download file in browser
-                    downloadFileFromBlob([filedata], getFileName());
-                });
-            });          
-        });
+        socket.on('finalDownloadToClient', function(buffer) {
+            var filedata = new Uint8Array(buffer);
+            downloadFileFromBlob([filedata], getFileName());
+        })
 
         socket.on('criticalError', function (error) {
             term.error(error.message);

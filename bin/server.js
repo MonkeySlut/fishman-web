@@ -4,8 +4,8 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
-const ss = require('socket.io-stream');
 const fishmanWeb = require('../lib');
+const streamBuffers = require('stream-buffers');
 const path = require('path'); //used only for express to serve statics
 
 app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -27,10 +27,10 @@ io.on('connection', socket => {
             incTypes: request.incTypes,
         };
 
-        let finalDownload = {
-            stream: ss.createStream(),
-            size: 0,
-        };
+        let finalDownload = new streamBuffers.WritableStreamBuffer({
+            initialSize: (100 * 1024 * 4),   // start at 400 kilobytes.
+            incrementAmount: (100 * 1024) // grow by 100 kilobytes each time buffer overflows.
+        });
 
         // TODO move updates to event handler on provider
         provider = fishmanWeb.cloneModule(options, finalDownload, (typeOfUpdate, content) => {
@@ -48,8 +48,7 @@ io.on('connection', socket => {
                     socket.disconnect();
                     break;
                 case 'finalDownloadToClient':
-                    socket.emit('finalDownloadToClientMD', finalDownload.size);
-                    ss(socket).emit(typeOfUpdate, finalDownload.stream);
+                    socket.emit(typeOfUpdate, finalDownload.getContents());
                     break;
                 default:
                     console.log(`this should never happen - typeOfUpdate ${typeOfUpdate} did not match!`);
