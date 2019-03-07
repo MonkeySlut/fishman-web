@@ -20,14 +20,14 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "async": "^2.1.4",
+        "async": "^2.6.2",
         "express": "^4.14.0",
         "memory-fs": "^0.4.1",
-        "npm-registry-client": "^7.4.5",
-        "semver": "^5.3.0",
+        "semver": "^5.6.0",
+        "silent-npm-registry-client": "^3.0.1",
         "socket.io": "^1.7.2",
         "socket.io-stream": "^0.9.1",
-        "tar-stream": "^1.5.2"
+        "tar-stream": "^2.0.1"
     },
     "engines": {
         "node": "10.15.3"

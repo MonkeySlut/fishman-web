@@ -74,6 +74,9 @@
 
     $('#terminal').terminal(function (command, term) {
         var socket = io.connect();
+        var domCounterLimit = 100;
+        var domCounterBuffer = 5;
+        var domCounter = 0;
         var fileLength = 0;
         fileBuffer = [];
         socket.on('finalDownloadToClientMD', function(streamSize) {
@@ -109,7 +112,17 @@
         });
 
         socket.on('regularUpdate', function (update) {
-                term.echo('<div style="color:'+update.color+'">'+update.message+'</div>',{raw: true});
+            if (domCounter + domCounterBuffer >= domCounterLimit) {
+                term.echo('!terminal will clear soon to keep DOM lightweight!');
+
+                if (domCounter == domCounterLimit) {
+                    term.clear();
+                    domCounter = 0;
+                    term.echo('!DOM cleared!')
+                }
+            }
+            term.echo('[[;'+update.color+';]'+update.message+']');
+            domCounter++;
         });
 
         socket.on('downloadProgress', function (update) {
